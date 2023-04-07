@@ -2,45 +2,56 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.scss';
 
-function Header(): JSX.Element {
+function Header({ title }: { title: string }): JSX.Element {
+
   return (
-    <header className="App-header">
+    <header>
       <img src={logo} className="App-logo" alt="logo" />
       <h1>
         <a href="/">
-          React WEB
+          {title}
         </a>
       </h1>
     </header>
   );
 }
 
-function Navigation(): JSX.Element {
+function Navigation({ topics }: { topics: { id: number, title: string, body: string }[] }): JSX.Element {
+  const lis = [];
+  for (const t of topics) {
+    lis.push(<li key={t.id}><a href={'/read/' + t.id}>{t.title}</a></li>);
+  }
   return (
     <nav>
       <ul>
-        <li> <a href="/read/1">html</a> </li>
-        <li> <a href="/read/2">scss</a> </li>
-        <li> <a href="/read/3">js</a> </li>
+        {lis}
       </ul>
     </nav>
   );
 }
 
-function Article(): JSX.Element {
+function Article({ title, body }: { title: string, body: string }): JSX.Element {
+  console.log({ title, body });
   return (
     <article>
-      <h1>Welcome</h1>
+      <h1>{title}</h1>
+      {body}
     </article>
   );
 }
 
 function App(): JSX.Element {
+  const topics = [
+    { id: 1, title: 'html', body: 'html is ...' },
+    { id: 2, title: 'scss', body: 'scss is ...' },
+    { id: 3, title: 'js', body: 'js is ...' },
+  ];
+
   return (
     <div className="App">
-      <Header></Header>
-      <Navigation></Navigation>
-      <Article></Article>
+      <Header title="React WEB"></Header>
+      <Navigation topics={topics}></Navigation>
+      <Article title="Welcome" body="Hello, React Web"></Article>
     </div>
   );
 }
