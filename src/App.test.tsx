@@ -1,12 +1,13 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+const LIST_LENGTH = 3;
+
+test('renders Header link', () => {
   render(<App />);
 
-  const linkElement = screen.getByText(/React WEB/);
-  expect(linkElement).toBeInTheDocument();
+  const header = screen.getByText(/React WEB/);
+  expect(header).toBeInTheDocument();
 });
 
 
@@ -17,12 +18,12 @@ test("renders a nav element", () => {
   expect(navElement).toBeInTheDocument();
 });
 
-test('should have 3 li tags inside nav', () => {
+test(`should have ${LIST_LENGTH} li tags inside nav`, () => {
   render(<App />);
 
   const listItems = screen.getAllByRole('listitem');
   expect(listItems).not.toBeNull();
-  expect(listItems.length).toBe(3);
+  expect(listItems.length).toBe(LIST_LENGTH);
 });
 
 test('Article tag should have "Hello, React Web" text and an h1 tag with text "Welcome"', () => {
@@ -33,4 +34,26 @@ test('Article tag should have "Hello, React Web" text and an h1 tag with text "W
 
   const helloText = screen.getByText('Hello, React Web');
   expect(helloText).toBeInTheDocument();
+});
+
+test('Header alert test', () => {
+  render(<App />);
+
+  const alertMock = jest.spyOn(window, 'alert').mockImplementation();
+  const header = screen.getByText(/React WEB/);
+  fireEvent.click(header);
+  expect(alertMock).toHaveBeenCalledTimes(1);
+});
+
+test('List items alert test', () => {
+  render(<App />);
+
+  const alertMock = jest.spyOn(window, 'alert').mockImplementation();
+  const listItems = screen.getAllByRole('listitem');
+
+  for (const listItem of listItems) {
+    const link = within(listItem).getByRole('link');
+    fireEvent.click(link);
+  }
+  expect(alertMock).toHaveBeenCalledTimes(LIST_LENGTH);
 });
