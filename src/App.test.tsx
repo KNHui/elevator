@@ -36,15 +36,6 @@ test('Article tag should have "Hello, React Web" text and an h1 tag with text "W
   expect(helloText).toBeInTheDocument();
 });
 
-test('Header alert test', () => {
-  render(<App />);
-
-  const alertMock = jest.spyOn(window, 'alert').mockImplementation();
-  const header = screen.getByText(/React WEB/);
-  fireEvent.click(header);
-  expect(alertMock).toHaveBeenCalledTimes(1);
-});
-
 test('List items alert test', () => {
   render(<App />);
 

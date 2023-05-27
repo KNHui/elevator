@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.scss';
 
@@ -51,18 +51,32 @@ function Article(props: { title: string, body: string }): JSX.Element {
   );
 }
 
+type AppMode = 'READ' | 'WELCOME';
+
 function App(): JSX.Element {
+  let [mode, setMode] = useState<AppMode>('WELCOME');
+  let [id, setId] = useState<number | null>(null);
   const topics = [
     { id: 1, title: 'html', body: 'html is ...' },
     { id: 2, title: 'scss', body: 'scss is ...' },
     { id: 3, title: 'js', body: 'js is ...' },
   ];
 
+  let contents: Record<AppMode, JSX.Element | null> = {
+    WELCOME: <Article title="Welcome" body="Hello, React Web"></Article>,
+    READ: null
+  };
+  const topic = topics.find((topic) => topic.id === id);
+  contents['READ'] = <Article title={topic?.title ?? '-'} body={topic?.body ?? '-'}></Article>;
+
   return (
     <div className="App">
-      <Header title="React WEB" onChangeMode={() => alert('header')}></Header>
-      <Navigation topics={topics} onChangeMode={(id) => alert(id)}></Navigation>
-      <Article title="Welcome" body="Hello, React Web"></Article>
+      <Header title="React WEB" onChangeMode={() => setMode('WELCOME')}></Header>
+      <Navigation topics={topics} onChangeMode={(_id) => {
+        setMode('READ');
+        setId(_id);
+      }}></Navigation>
+      {contents[mode]}
     </div>
   );
 }
