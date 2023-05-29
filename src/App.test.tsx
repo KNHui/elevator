@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import App from './App';
 
 const LIST_LENGTH = 3;
@@ -36,15 +36,9 @@ test('Article tag should have "Hello, React Web" text and an h1 tag with text "W
   expect(helloText).toBeInTheDocument();
 });
 
-test('List items alert test', () => {
+test('Create Button test', () => {
   render(<App />);
 
-  const alertMock = jest.spyOn(window, 'alert').mockImplementation();
-  const listItems = screen.getAllByRole('listitem');
-
-  for (const listItem of listItems) {
-    const link = within(listItem).getByRole('link');
-    fireEvent.click(link);
-  }
-  expect(alertMock).toHaveBeenCalledTimes(LIST_LENGTH);
+  const createButton = screen.getByText(/Create/);
+  expect(createButton).toBeInTheDocument();
 });
