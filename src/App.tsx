@@ -3,15 +3,7 @@ import './App.scss';
 import { Header } from './components/header/Header';
 import { AppMode, Topic } from 'models/contents';
 import { Navigation } from 'components/navigation/Navigation';
-
-function Article(props: Omit<Topic, 'id'>): JSX.Element {
-  return (
-    <article>
-      <h1>{props.title}</h1>
-      {props.body}
-    </article>
-  );
-}
+import { Article } from 'components/article/Article';
 
 function Create(props: { onCreate: (topic: Omit<Topic, 'id'>) => void }): JSX.Element {
   return (
