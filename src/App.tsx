@@ -1,32 +1,8 @@
 import { useState } from 'react';
 import './App.scss';
 import { Header } from './components/header/Header';
-
-type Topic = { id: number; title: string; body: string; };
-type AppMode = 'READ' | 'WELCOME' | 'CREATE';
-
-export function Navigation(props: { topics: Topic[], onChangeMode: (id: number) => void }): JSX.Element {
-  const lis = [];
-  for (const t of props.topics) {
-    lis.push(
-      <li key={t.id}>
-        <a id={t.id.toString()} href={'/read/' + t.id} onClick={(event) => {
-          event.preventDefault();
-          props.onChangeMode(t.id);
-        }}>
-          {t.title}
-        </a>
-      </li>
-    );
-  }
-  return (
-    <nav>
-      <ol>
-        {lis}
-      </ol>
-    </nav>
-  );
-}
+import { AppMode, Topic } from 'models/contents';
+import { Navigation } from 'components/navigation/Navigation';
 
 function Article(props: Omit<Topic, 'id'>): JSX.Element {
   return (
