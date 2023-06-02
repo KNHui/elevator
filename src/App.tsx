@@ -1,77 +1,51 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.scss';
-
-function Header(props: { title: string, onChangeMode: Function }): JSX.Element {
-
-  return (
-    <header>
-      <img src={logo} className="App-logo" alt="logo" />
-      <h1>
-        <a href="/" onClick={(event) => {
-          event.preventDefault();
-          props.onChangeMode();
-        }}>
-          {props.title}
-        </a>
-      </h1>
-    </header>
-  );
-}
-
-export function Navigation(props: { topics: { id: number, title: string }[], onChangeMode: (id: number) => void }): JSX.Element {
-  const lis = [];
-  for (const t of props.topics) {
-    lis.push(
-      <li key={t.id}>
-        <a href={'/read/' + t.id} onClick={(event) => {
-          event.preventDefault();
-          props.onChangeMode(t.id);
-        }}>
-          {t.title}
-        </a>
-      </li>
-    );
-  }
-  return (
-    <nav>
-      <ul>
-        {lis}
-      </ul>
-    </nav>
-  );
-}
-
-function Article(props: { title: string, body: string }): JSX.Element {
-  return (
-    <article>
-      <h1>{props.title}</h1>
-      {props.body}
-    </article>
-  );
-}
-
-type AppMode = 'READ' | 'WELCOME';
+import { Header } from './components/header/Header';
+import { AppMode, Topic } from 'models/contents';
+import { Navigation } from 'components/navigation/Navigation';
+import { Article } from 'components/article/Article';
+import { Create } from 'components/create/Create';
 
 function App(): JSX.Element {
-  let [mode, setMode] = useState<AppMode>('WELCOME');
-  let [id, setId] = useState<number | null>(null);
-  const topics = [
+  const [mode, setMode] = useState<AppMode>('WELCOME');
+  const [id, setId] = useState<number | null>(null);
+  const [topics, setTopics] = useState<Topic[]>([
     { id: 1, title: 'html', body: 'html is ...' },
     { id: 2, title: 'scss', body: 'scss is ...' },
     { id: 3, title: 'js', body: 'js is ...' },
-  ];
+  ]);
+  const [nextId, setNextId] = useState<number>(topics.length + 1);
 
   let contents: Record<AppMode, JSX.Element | null> = {
     WELCOME: <Article title="Welcome" body="Hello, React Web"></Article>,
-    READ: null
-  };
-  const topic = topics.find((topic) => topic.id === id);
-  contents['READ'] = <Article title={topic?.title ?? '-'} body={topic?.body ?? '-'}></Article>;
+    READ: null,
+    CREATE: <Create onCreate={(topic: Omit<Topic, 'id'>): void => {
+      const newTopic: Topic = {
+        id: nextId,
+        title: topic.title,
+        body: topic.body
+      };
+      const newTopics = [...topics];
 
+      newTopics.push(newTopic);
+      setTopics(newTopics);
+      setMode('READ');
+      setId(nextId);
+      setNextId(nextId + 1);
+    }}></Create>
+  };
+
+  if (mode === 'READ') {
+    const topic = topics.find((topic) => topic.id === id);
+    contents[mode] = <Article title={topic?.title ?? '-'} body={topic?.body ?? '-'}></Article>;
+  }
   return (
     <div className="App">
       <Header title="React WEB" onChangeMode={() => setMode('WELCOME')}></Header>
+      <a href="/create" onClick={(event) => {
+        event.preventDefault();
+        setMode('CREATE');
+      }}>Create</a>
       <Navigation topics={topics} onChangeMode={(_id) => {
         setMode('READ');
         setId(_id);
