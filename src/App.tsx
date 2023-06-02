@@ -4,26 +4,7 @@ import { Header } from './components/header/Header';
 import { AppMode, Topic } from 'models/contents';
 import { Navigation } from 'components/navigation/Navigation';
 import { Article } from 'components/article/Article';
-
-function Create(props: { onCreate: (topic: Omit<Topic, 'id'>) => void }): JSX.Element {
-  return (
-    <article>
-      <h2>Create</h2>
-      <form action="" method="post" onSubmit={(event) => {
-        event.preventDefault();
-        const { elements } = event.currentTarget;
-        const title = (elements.namedItem('title') as HTMLInputElement).value;
-        const body = (elements.namedItem('body') as HTMLInputElement).value;
-
-        props.onCreate({ title, body });
-      }}>
-        <p><input type="text" name="title" placeholder='title' /></p>
-        <p><textarea name="body" placeholder="body"></textarea></p>
-        <p><input type="submit" value="Create" /></p>
-      </form>
-    </article>
-  );
-}
+import { Create } from 'components/create/Create';
 
 function App(): JSX.Element {
   const [mode, setMode] = useState<AppMode>('WELCOME');

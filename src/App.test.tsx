@@ -25,10 +25,3 @@ test(`should have ${LIST_LENGTH} li tags inside nav`, () => {
   expect(listItems).not.toBeNull();
   expect(listItems.length).toBe(LIST_LENGTH);
 });
-
-test('Create Button test', () => {
-  render(<App />);
-
-  const createButton = screen.getByText(/Create/);
-  expect(createButton).toBeInTheDocument();
-});
