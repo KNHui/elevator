@@ -1,25 +1,9 @@
 import { useState } from 'react';
-import logo from './logo.svg';
 import './App.scss';
+import { Header } from './components/header/Header';
 
 type Topic = { id: number; title: string; body: string; };
 type AppMode = 'READ' | 'WELCOME' | 'CREATE';
-
-function Header(props: { title: string, onChangeMode: Function }): JSX.Element {
-  return (
-    <header>
-      <img src={logo} className="App-logo" alt="logo" />
-      <h1>
-        <a href="/" onClick={(event) => {
-          event.preventDefault();
-          props.onChangeMode();
-        }}>
-          {props.title}
-        </a>
-      </h1>
-    </header>
-  );
-}
 
 export function Navigation(props: { topics: Topic[], onChangeMode: (id: number) => void }): JSX.Element {
   const lis = [];
