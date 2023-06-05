@@ -13,7 +13,7 @@ export function Create(props: { onCreate: (topic: Omit<Topic, 'id'>) => void }):
 
                 props.onCreate({ title, body });
             }}>
-                <p><input type="text" name="title" placeholder='title' /></p>
+                <p><input type="text" name="title" placeholder="title" /></p>
                 <p><textarea name="body" placeholder="body"></textarea></p>
                 <p><input type="submit" value="Create" /></p>
             </form>
