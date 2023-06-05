@@ -20,7 +20,7 @@ export function Navigation(props: { topics: Topic[], onChangeMode: (id: number) 
     }
     return (
         <nav>
-            <ol>
+            <ol className="list-center">
                 {lis}
             </ol>
         </nav>
