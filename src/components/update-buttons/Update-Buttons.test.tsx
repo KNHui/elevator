@@ -18,9 +18,9 @@ test('renders Header link', () => {
         />
     );
 
-    const link = screen.getByRole('link');
-    expect(link).toBeInTheDocument();
+    const button = screen.getByRole('button');
+    expect(button).toBeInTheDocument();
 
-    fireEvent.click(link);
+    fireEvent.click(button);
     expect(mode).toBe(buttonValue);
 });

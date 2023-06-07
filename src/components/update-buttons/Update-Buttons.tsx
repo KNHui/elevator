@@ -7,14 +7,13 @@ export function UpdateButtons(props: { buttons: Button<UpdateMode>[], onChangeMo
     for (const button of props.buttons) {
         buttonTags.push(
             <li>
-                <a
-                    href={`/${button.value}`}
+                <input
+                    type="button"
+                    value={button.text}
                     onClick={(event) => {
-                        event.preventDefault();
                         props.onChangeMode(button.value);
-                    }}>
-                    {button.text}
-                </a>
+                    }}
+                />
             </li>
         );
     }
