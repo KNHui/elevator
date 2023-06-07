@@ -56,31 +56,47 @@ function App(): JSX.Element {
         setTopics(newTopics);
         setMode('READ');
       }}
-    />
+    />,
+    DELETE: null
   };
 
   const createButton: Button<UpdateMode> = { text: 'Create', value: 'CREATE' };
   const updateButton: Button<UpdateMode> = { text: 'Update', value: 'UPDATE' };
+  const deleteButton: Button<UpdateMode> = { text: 'Delete', value: 'DELETE' };
   let buttons: Button<UpdateMode>[] = [createButton];
   if (mode === 'READ') {
     contents[mode] = <Article
       title={topic?.title ?? '-'}
       body={topic?.body ?? '-'}
     />;
-    buttons = [createButton, updateButton];
+    buttons = [createButton, updateButton, deleteButton];
   }
 
 
   return (
     <div className="App">
-      <Header title="React WEB" onChangeMode={() => setMode('WELCOME')}></Header>
-      <UpdateButtons buttons={buttons} onChangeMode={(value) => {
-        setMode(value);
-      }}></UpdateButtons>
-      <Navigation topics={topics} onChangeMode={(_id) => {
-        setMode('READ');
-        setId(_id);
-      }}></Navigation>
+      <Header
+        title="React WEB"
+        onChangeMode={() => setMode('WELCOME')}
+      />
+      <UpdateButtons
+        buttons={buttons}
+        onChangeMode={(value) => {
+          if (value === 'DELETE') {
+            const newTopics = [...topics.filter(topic => topic.id !== id)];
+
+            setTopics(newTopics);
+          }
+          setMode(value === 'DELETE' ? 'WELCOME' : value);
+        }}
+      />
+      <Navigation
+        topics={topics}
+        onChangeMode={(_id) => {
+          setMode('READ');
+          setId(_id);
+        }}
+      />
       {contents[mode]}
     </div>
   );
