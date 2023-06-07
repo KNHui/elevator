@@ -1,24 +1,103 @@
-import React from 'react';
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.scss';
+import { Header } from './components/header/Header';
+import { AppMode, Topic, UpdateMode } from 'models/contents';
+import { Navigation } from 'components/navigation/Navigation';
+import { Article } from 'components/article/Article';
+import { Create } from 'components/create/Create';
+import { Button } from 'models/buttons';
+import { UpdateButtons } from 'components/update-buttons/Update-Buttons';
+import { Update } from 'components/update/Update';
 
-function App() {
+function App(): JSX.Element {
+  const [mode, setMode] = useState<AppMode>('WELCOME');
+  const [id, setId] = useState<number | null>(null);
+  const [topics, setTopics] = useState<Topic[]>([
+    { id: 1, title: 'html', body: 'html is ...' },
+    { id: 2, title: 'scss', body: 'scss is ...' },
+    { id: 3, title: 'js', body: 'js is ...' },
+  ]);
+  const [nextId, setNextId] = useState<number>(topics.length + 1);
+  const topic = topics.find((topic) => topic.id === id);
+
+  let contents: Record<AppMode, JSX.Element | null> = {
+    WELCOME: <Article
+      title="Welcome"
+      body="Hello, React Web"
+    />,
+    READ: null,
+    CREATE: <Create
+      onCreate={(topic: Omit<Topic, 'id'>): void => {
+        const newTopic: Topic = {
+          id: nextId,
+          title: topic.title,
+          body: topic.body
+        };
+
+        setTopics([...topics, newTopic]);
+        setMode('READ');
+        setId(nextId);
+        setNextId(nextId + 1);
+      }}
+    />,
+    UPDATE: <Update
+      title={topic?.title ?? ''}
+      body={topic?.body ?? ''}
+      onUpdate={({ title, body }) => {
+        const newTopics = [...topics];
+
+        for (const topic of newTopics) {
+          if (topic.id === id) {
+            topic.title = title;
+            topic.body = body;
+            break;
+          }
+        }
+        setTopics(newTopics);
+        setMode('READ');
+      }}
+    />,
+    DELETE: null
+  };
+
+  const createButton: Button<UpdateMode> = { text: 'Create', value: 'CREATE' };
+  const updateButton: Button<UpdateMode> = { text: 'Update', value: 'UPDATE' };
+  const deleteButton: Button<UpdateMode> = { text: 'Delete', value: 'DELETE' };
+  let buttons: Button<UpdateMode>[] = [createButton];
+  if (mode === 'READ') {
+    contents[mode] = <Article
+      title={topic?.title ?? '-'}
+      body={topic?.body ?? '-'}
+    />;
+    buttons = [createButton, updateButton, deleteButton];
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header
+        title="React WEB"
+        onChangeMode={() => setMode('WELCOME')}
+      />
+      <UpdateButtons
+        buttons={buttons}
+        onChangeMode={(value) => {
+          if (value === 'DELETE') {
+            const newTopics = [...topics.filter(topic => topic.id !== id)];
+
+            setTopics(newTopics);
+          }
+          setMode(value === 'DELETE' ? 'WELCOME' : value);
+        }}
+      />
+      <Navigation
+        topics={topics}
+        onChangeMode={(_id) => {
+          setMode('READ');
+          setId(_id);
+        }}
+      />
+      {contents[mode]}
     </div>
   );
 }

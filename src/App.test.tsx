@@ -1,9 +1,24 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders Header link', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+
+  const header = screen.getByText(/React WEB/);
+  expect(header).toBeInTheDocument();
+});
+
+
+test("renders a nav element", () => {
+  render(<App />);
+
+  const navElement = screen.getByRole("navigation");
+  expect(navElement).toBeInTheDocument();
+});
+
+test(`should have li tags inside nav`, () => {
+  render(<App />);
+
+  const listItems = screen.getAllByRole('listitem');
+  expect(listItems).not.toBeNull();
 });
